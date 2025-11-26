@@ -30,7 +30,7 @@ const SearchModal = ({ isOpen, onClose, onAddTrack }) => {
                 const response = await fetch(
                     `https://itunes.apple.com/search?term=${encodeURIComponent(
                         debouncedQuery
-                    )}&media=music&entity=song&limit=20`
+                    )}&media=music&entity=song&limit=20&country=FR`
                 );
                 const data = await response.json();
                 setResults(data.results);
