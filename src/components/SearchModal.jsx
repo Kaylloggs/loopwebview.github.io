@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { X, Search, Plus, Loader2, Music } from "lucide-react";
+import { searchDeezer } from "../services/deezer";
 
 const SearchModal = ({ isOpen, onClose, onAddTrack }) => {
     const [query, setQuery] = useState("");
@@ -23,25 +24,20 @@ const SearchModal = ({ isOpen, onClose, onAddTrack }) => {
             return;
         }
 
-        const searchMusic = async () => {
+        const performSearch = async () => {
             setIsLoading(true);
             try {
-                // Using iTunes Search API (Free, no key required)
-                const response = await fetch(
-                    `https://itunes.apple.com/search?term=${encodeURIComponent(
-                        debouncedQuery
-                    )}&media=music&entity=song&limit=20&country=FR`
-                );
-                const data = await response.json();
-                setResults(data.results);
+                const results = await searchDeezer(debouncedQuery);
+                setResults(results);
             } catch (error) {
                 console.error("Error searching music:", error);
+                setResults([]);
             } finally {
                 setIsLoading(false);
             }
         };
 
-        searchMusic();
+        performSearch();
     }, [debouncedQuery]);
 
     if (!isOpen) return null;
@@ -104,30 +100,30 @@ const SearchModal = ({ isOpen, onClose, onAddTrack }) => {
 
                     {results.map((track) => (
                         <div
-                            key={track.trackId}
+                            key={track.id}
                             className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-2xl transition-colors group cursor-pointer"
                             onClick={() => {
                                 onAddTrack({
-                                    id: track.trackId,
-                                    title: track.trackName,
-                                    artist: track.artistName,
-                                    cover: track.artworkUrl100, // Note: This is a URL, existing app uses tailwind classes for covers mostly but we should handle URLs
-                                    previewUrl: track.previewUrl,
+                                    id: track.id,
+                                    title: track.title,
+                                    artist: track.artist.name,
+                                    cover: track.album.cover_xl, // High quality cover
+                                    previewUrl: track.preview,
                                 });
                                 onClose();
                             }}
                         >
                             <img
-                                src={track.artworkUrl100}
-                                alt={track.trackName}
+                                src={track.album.cover_medium}
+                                alt={track.title}
                                 className="w-12 h-12 rounded-xl object-cover shadow-sm"
                             />
                             <div className="flex-1 min-w-0">
                                 <h4 className="font-bold text-slate-900 truncate">
-                                    {track.trackName}
+                                    {track.title}
                                 </h4>
                                 <p className="text-xs text-slate-500 truncate">
-                                    {track.artistName}
+                                    {track.artist.name}
                                 </p>
                             </div>
                             <button className="p-2 bg-indigo-50 text-indigo-600 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-indigo-100">
