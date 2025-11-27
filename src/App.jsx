@@ -178,40 +178,74 @@ const MODES = [
 ];
 
 const MOCK_RECENTS = [
-
   {
     id: 1,
     name: "Soirée Samedi",
     host: "Lucas",
     service: "Spotify",
-    status: "En cours",
+    status: "Terminée",
     cover: "bg-gradient-to-r from-pink-500 to-rose-500",
     icon: <Music size={20} />,
-    participants: MOCK_PARTICIPANTS_DATA,
-    history: MOCK_HISTORY,
+    participants: [
+      { id: 1, name: "Alice M.", avatar: "bg-pink-200" },
+      { id: 2, name: "Lucas D.", avatar: "bg-blue-200" },
+      { id: 5, name: "Sophie L.", avatar: "bg-purple-200" },
+      { id: 6, name: "Marc P.", avatar: "bg-orange-200" },
+    ],
+    history: [
+      { id: 101, title: "One More Time", artist: "Daft Punk", cover: "bg-blue-400" },
+      { id: 102, title: "Starboy", artist: "The Weeknd", cover: "bg-red-500" },
+      { id: 103, title: "Nightcall", artist: "Kavinsky", cover: "bg-indigo-900" },
+      { id: 104, title: "Midnight City", artist: "M83", cover: "bg-purple-500" },
+    ],
   },
   {
     id: 2,
     name: "Roadtrip Sud",
     host: "Moi",
     service: "Apple Music",
-    status: "Terminée hier",
+    status: "Terminée",
     cover: "bg-gray-200",
     icon: <Radio size={20} />,
     participants: [
       { id: 1, name: "Alice M.", avatar: "bg-pink-200" },
-      { id: 2, name: "Lucas D.", avatar: "bg-blue-200" },
+      { id: 3, name: "Chloé B.", avatar: "bg-green-200" },
+      { id: 7, name: "Tom H.", avatar: "bg-yellow-200" },
     ],
     history: [
-      {
-        id: 101,
-        title: "One More Time",
-        artist: "Daft Punk",
-        cover: "bg-blue-400",
-        playedAt: "22:15",
-      },
+      { id: 201, title: "Get Lucky", artist: "Daft Punk", cover: "bg-yellow-400" },
+      { id: 202, title: "Instant Crush", artist: "Daft Punk", cover: "bg-gray-700" },
+      { id: 203, title: "Lose Yourself", artist: "Eminem", cover: "bg-slate-800" },
     ],
   },
+  {
+    id: 3,
+    name: "Chill Vibe",
+    host: "Chloé",
+    service: "Deezer",
+    status: "Terminée",
+    cover: "bg-gradient-to-br from-teal-400 to-emerald-500",
+    icon: <Music size={20} />,
+    participants: [
+      { id: 2, name: "Lucas D.", avatar: "bg-blue-200" },
+      { id: 3, name: "Chloé B.", avatar: "bg-green-200" },
+      { id: 8, name: "Emma W.", avatar: "bg-red-200" },
+      { id: 9, name: "Paul S.", avatar: "bg-cyan-200" },
+      { id: 10, name: "Julie A.", avatar: "bg-pink-300" },
+    ],
+    history: [
+      { id: 301, title: "Shape of You", artist: "Ed Sheeran", cover: "bg-teal-400" },
+      { id: 302, title: "Blinding Lights", artist: "The Weeknd", cover: "bg-red-600" },
+      { id: 303, title: "Dance Monkey", artist: "Tones and I", cover: "bg-gray-400" },
+      { id: 304, title: "Someone You Loved", artist: "Lewis Capaldi", cover: "bg-slate-500" },
+      { id: 305, title: "Bad Guy", artist: "Billie Eilish", cover: "bg-yellow-300" },
+    ],
+  },
+];
+
+const MOCK_INVITATIONS = [
+  { id: 1, from: "Sophie L.", avatar: "bg-purple-200", roomName: "Soirée Pizza" },
+  { id: 2, from: "Marc P.", avatar: "bg-orange-200", roomName: "Gaming Night" },
 ];
 
 // --- Components ---
@@ -345,6 +379,8 @@ export default function QunoApp() {
   const [participants, setParticipants] = useState(MOCK_PARTICIPANTS_DATA);
   const [queue, setQueue] = useState(MOCK_QUEUE);
   const [friends, setFriends] = useState(MOCK_FRIENDS);
+  const [invitations, setInvitations] = useState(MOCK_INVITATIONS);
+  const [friendsTab, setFriendsTab] = useState("list"); // 'list' or 'invitations'
   const [isHosting, setIsHosting] = useState(false);
   const [activeRoom, setActiveRoom] = useState(null); // { id, role, name }
   const [recentRooms, setRecentRooms] = useState(MOCK_RECENTS);
@@ -528,6 +564,24 @@ export default function QunoApp() {
 
   const handleDeleteFriend = (id) => {
     setFriends((prev) => prev.filter((f) => f.id !== id));
+  };
+
+  const handleAcceptInvitation = (invitation) => {
+    setFriends((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        name: invitation.from,
+        avatar: invitation.avatar,
+        status: "En ligne",
+        inRoom: false,
+      },
+    ]);
+    setInvitations((prev) => prev.filter((inv) => inv.id !== invitation.id));
+  };
+
+  const handleDeclineInvitation = (id) => {
+    setInvitations((prev) => prev.filter((inv) => inv.id !== id));
   };
 
   const addToQueue = (track) => {
@@ -910,79 +964,150 @@ export default function QunoApp() {
         />
       </div>
 
-      {/* Invitation Section */}
-      <Card className="bg-indigo-50 border-indigo-100 flex items-center justify-between p-4">
-        <div className="flex items-center gap-3">
-          <div className="bg-white p-2 rounded-full text-indigo-600">
-            <Share2 size={20} />
-          </div>
-          <div>
-            <h4 className="font-bold text-indigo-900 text-sm">
-              Inviter des amis
-            </h4>
-            <p className="text-indigo-600/70 text-xs">
-              Partagez votre lien unique
-            </p>
-          </div>
-        </div>
-        <button className="text-xs font-bold bg-white text-indigo-600 px-3 py-1.5 rounded-full shadow-sm hover:bg-indigo-50 transition-colors">
-          Copier
+      <div className="flex p-1 bg-gray-100 rounded-xl mb-6">
+        <button
+          onClick={() => setFriendsTab("list")}
+          className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${friendsTab === "list"
+            ? "bg-white text-slate-900 shadow-sm"
+            : "text-slate-500 hover:text-slate-700"
+            }`}
+        >
+          Mes amis
         </button>
-      </Card>
+        <button
+          onClick={() => setFriendsTab("invitations")}
+          className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${friendsTab === "invitations"
+            ? "bg-white text-slate-900 shadow-sm"
+            : "text-slate-500 hover:text-slate-700"
+            }`}
+        >
+          Invitations
+          {invitations.length > 0 && (
+            <span className="ml-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+              {invitations.length}
+            </span>
+          )}
+        </button>
+      </div>
 
-      <div className="space-y-1">
-        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-2 mt-4 mb-2">
-          Vos amis
-        </h3>
-        {friends.map((friend) => (
-          <div
-            key={friend.id}
-            className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-2xl transition-colors"
-          >
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Avatar name={friend.name} color={friend.avatar} />
-                <div
-                  className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${friend.status === "Hors ligne"
-                    ? "bg-gray-300"
-                    : "bg-green-500"
-                    }`}
-                ></div>
+      {friendsTab === "list" ? (
+        <>
+          {/* Invitation Section */}
+          <Card className="bg-indigo-50 border-indigo-100 flex items-center justify-between p-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-white p-2 rounded-full text-indigo-600">
+                <Share2 size={20} />
               </div>
               <div>
-                <h4 className="font-bold text-slate-900">{friend.name}</h4>
-                <p className="text-xs text-slate-500">{friend.status}</p>
+                <h4 className="font-bold text-indigo-900 text-sm">
+                  Inviter des amis
+                </h4>
+                <p className="text-indigo-600/70 text-xs">
+                  Partagez votre lien unique
+                </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              {isHosting ? (
-                <button
-                  onClick={() => alert(`Invitation envoyée à ${friend.name}`)}
-                  className="px-4 py-1.5 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-full hover:bg-indigo-100 transition-colors flex items-center gap-1"
-                >
-                  <UserPlus size={14} />
-                  Inviter
-                </button>
-              ) : friend.inRoom ? (
-                <button
-                  onClick={joinRoom}
-                  className="px-4 py-1.5 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-full hover:bg-indigo-100 transition-colors"
-                >
-                  Rejoindre
-                </button>
-              ) : null}
+            <button className="text-xs font-bold bg-white text-indigo-600 px-3 py-1.5 rounded-full shadow-sm hover:bg-indigo-50 transition-colors">
+              Copier
+            </button>
+          </Card>
 
-              <button
-                onClick={() => handleDeleteFriend(friend.id)}
-                className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
-                title="Supprimer"
+          <div className="space-y-1">
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-2 mt-4 mb-2">
+              Vos amis ({friends.length})
+            </h3>
+            {friends.map((friend) => (
+              <div
+                key={friend.id}
+                className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-2xl transition-colors"
               >
-                <Trash2 size={18} />
-              </button>
-            </div>
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <Avatar name={friend.name} color={friend.avatar} />
+                    <div
+                      className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${friend.status === "Hors ligne"
+                        ? "bg-gray-300"
+                        : "bg-green-500"
+                        }`}
+                    ></div>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-900">{friend.name}</h4>
+                    <p className="text-xs text-slate-500">{friend.status}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {isHosting ? (
+                    <button
+                      onClick={() => alert(`Invitation envoyée à ${friend.name}`)}
+                      className="px-4 py-1.5 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-full hover:bg-indigo-100 transition-colors flex items-center gap-1"
+                    >
+                      <UserPlus size={14} />
+                      Inviter
+                    </button>
+                  ) : friend.inRoom ? (
+                    <button
+                      onClick={joinRoom}
+                      className="px-4 py-1.5 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-full hover:bg-indigo-100 transition-colors"
+                    >
+                      Rejoindre
+                    </button>
+                  ) : null}
+
+                  <button
+                    onClick={() => handleDeleteFriend(friend.id)}
+                    className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                    title="Supprimer"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      ) : (
+        <div className="space-y-3">
+          {invitations.length === 0 ? (
+            <div className="text-center py-10 text-slate-400">
+              <p>Aucune invitation en attente</p>
+            </div>
+          ) : (
+            invitations.map((inv) => (
+              <div
+                key={inv.id}
+                className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm"
+              >
+                <div className="flex items-center gap-4 mb-3">
+                  <Avatar name={inv.from} color={inv.avatar} />
+                  <div>
+                    <h4 className="font-bold text-slate-900">
+                      {inv.from}
+                    </h4>
+                    <p className="text-xs text-slate-500">
+                      veut être votre ami
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleAcceptInvitation(inv)}
+                    className="flex-1 bg-slate-900 text-white py-2 rounded-xl text-sm font-bold hover:bg-slate-800 transition-colors"
+                  >
+                    Accepter
+                  </button>
+                  <button
+                    onClick={() => handleDeclineInvitation(inv.id)}
+                    className="flex-1 bg-gray-100 text-slate-600 py-2 rounded-xl text-sm font-bold hover:bg-gray-200 transition-colors"
+                  >
+                    Refuser
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 
