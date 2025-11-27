@@ -61,6 +61,7 @@ import { authService } from "./services/auth";
 import logo from "./assets/Logo_Basique.svg";
 import SearchModal from "./components/SearchModal";
 import SubscriptionModal from "./components/modals/SubscriptionModal";
+import RoomInvitationsMenu from "./components/RoomInvitationsMenu";
 
 // --- Mock Data ---
 
@@ -396,6 +397,7 @@ export default function QunoApp() {
   const [showRoomDetailsModal, setShowRoomDetailsModal] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [showRoomInvitations, setShowRoomInvitations] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -589,6 +591,21 @@ export default function QunoApp() {
 
   const handleDeclineInvitation = (id) => {
     setInvitations((prev) => prev.filter((inv) => inv.id !== id));
+  };
+
+  const handleJoinRoomInvitation = (invitation) => {
+    if (activeRoom) {
+      alert("Vous êtes déjà dans une room active ! Quittez-la d'abord.");
+      return;
+    }
+    setActiveRoom({ id: 999, role: "guest", name: invitation.roomName });
+    setRoomInvitations((prev) => prev.filter((inv) => inv.id !== invitation.id));
+    setShowRoomInvitations(false);
+    setView("room-guest");
+  };
+
+  const handleDeclineRoomInvitation = (id) => {
+    setRoomInvitations((prev) => prev.filter((inv) => inv.id !== id));
   };
 
   const addToQueue = (track) => {
@@ -969,7 +986,7 @@ export default function QunoApp() {
           <div className="relative">
             <button
               className="bg-white text-slate-900 p-2 rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 transition-colors"
-              onClick={() => alert(`Vous avez ${roomInvitations.length} invitations de room !`)}
+              onClick={() => setShowRoomInvitations(!showRoomInvitations)}
             >
               <Bell size={20} />
               {roomInvitations.length > 0 && (
@@ -978,6 +995,15 @@ export default function QunoApp() {
                 </span>
               )}
             </button>
+
+            {showRoomInvitations && (
+              <RoomInvitationsMenu
+                invitations={roomInvitations}
+                onJoin={handleJoinRoomInvitation}
+                onDecline={handleDeclineRoomInvitation}
+                onClose={() => setShowRoomInvitations(false)}
+              />
+            )}
           </div>
           <button className="bg-slate-900 text-white p-2 rounded-full hover:bg-slate-800 transition-colors">
             <Plus size={20} />
