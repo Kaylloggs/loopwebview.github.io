@@ -39,6 +39,7 @@ import {
   UserPlus,
   ChevronDown,
   Power,
+  Bell,
 } from "lucide-react";
 import {
   DndContext,
@@ -94,7 +95,7 @@ const MOCK_QUEUE = [
     artist: "M83",
     votes: 12,
     addedBy: "Alice",
-    cover: "bg-gradient-to-br from-purple-500 to-indigo-600",
+    cover: "https://e-cdns-images.dzcdn.net/images/cover/d405d93d530460c3830332d7339e374d/264x264-000000-80-0-0.jpg",
   },
   {
     id: 2,
@@ -102,7 +103,7 @@ const MOCK_QUEUE = [
     artist: "Daft Punk",
     votes: 8,
     addedBy: "Lucas",
-    cover: "bg-gradient-to-br from-yellow-400 to-orange-500",
+    cover: "https://e-cdns-images.dzcdn.net/images/cover/2e018122cb56986277102d2041a592c8/264x264-000000-80-0-0.jpg",
   },
   {
     id: 3,
@@ -110,7 +111,7 @@ const MOCK_QUEUE = [
     artist: "Daft Punk",
     votes: 5,
     addedBy: "Moi",
-    cover: "bg-gradient-to-br from-gray-700 to-black",
+    cover: "https://e-cdns-images.dzcdn.net/images/cover/2e018122cb56986277102d2041a592c8/264x264-000000-80-0-0.jpg",
   },
 ];
 
@@ -120,7 +121,7 @@ const MOCK_HISTORY = [
     title: "One More Time",
     artist: "Daft Punk",
     addedBy: "Lucas",
-    cover: "bg-blue-400",
+    cover: "https://e-cdns-images.dzcdn.net/images/cover/2e018122cb56986277102d2041a592c8/264x264-000000-80-0-0.jpg",
     playedAt: "22:15",
   },
   {
@@ -128,7 +129,7 @@ const MOCK_HISTORY = [
     title: "Starboy",
     artist: "The Weeknd",
     addedBy: "Alice",
-    cover: "bg-red-500",
+    cover: "https://e-cdns-images.dzcdn.net/images/cover/4d94c965e3b48236d5073145a2781427/264x264-000000-80-0-0.jpg",
     playedAt: "22:10",
   },
   {
@@ -136,7 +137,7 @@ const MOCK_HISTORY = [
     title: "Nightcall",
     artist: "Kavinsky",
     addedBy: "Chloé",
-    cover: "bg-indigo-900",
+    cover: "https://e-cdns-images.dzcdn.net/images/cover/d20d7717462438526550692762024846/264x264-000000-80-0-0.jpg",
     playedAt: "22:05",
   },
 ];
@@ -193,10 +194,10 @@ const MOCK_RECENTS = [
       { id: 6, name: "Marc P.", avatar: "bg-orange-200" },
     ],
     history: [
-      { id: 101, title: "One More Time", artist: "Daft Punk", cover: "bg-blue-400" },
-      { id: 102, title: "Starboy", artist: "The Weeknd", cover: "bg-red-500" },
-      { id: 103, title: "Nightcall", artist: "Kavinsky", cover: "bg-indigo-900" },
-      { id: 104, title: "Midnight City", artist: "M83", cover: "bg-purple-500" },
+      { id: 101, title: "One More Time", artist: "Daft Punk", cover: "https://e-cdns-images.dzcdn.net/images/cover/2e018122cb56986277102d2041a592c8/264x264-000000-80-0-0.jpg" },
+      { id: 102, title: "Starboy", artist: "The Weeknd", cover: "https://e-cdns-images.dzcdn.net/images/cover/4d94c965e3b48236d5073145a2781427/264x264-000000-80-0-0.jpg" },
+      { id: 103, title: "Nightcall", artist: "Kavinsky", cover: "https://e-cdns-images.dzcdn.net/images/cover/d20d7717462438526550692762024846/264x264-000000-80-0-0.jpg" },
+      { id: 104, title: "Midnight City", artist: "M83", cover: "https://e-cdns-images.dzcdn.net/images/cover/d405d93d530460c3830332d7339e374d/264x264-000000-80-0-0.jpg" },
     ],
   },
   {
@@ -213,9 +214,9 @@ const MOCK_RECENTS = [
       { id: 7, name: "Tom H.", avatar: "bg-yellow-200" },
     ],
     history: [
-      { id: 201, title: "Get Lucky", artist: "Daft Punk", cover: "bg-yellow-400" },
-      { id: 202, title: "Instant Crush", artist: "Daft Punk", cover: "bg-gray-700" },
-      { id: 203, title: "Lose Yourself", artist: "Eminem", cover: "bg-slate-800" },
+      { id: 201, title: "Get Lucky", artist: "Daft Punk", cover: "https://e-cdns-images.dzcdn.net/images/cover/2e018122cb56986277102d2041a592c8/264x264-000000-80-0-0.jpg" },
+      { id: 202, title: "Instant Crush", artist: "Daft Punk", cover: "https://e-cdns-images.dzcdn.net/images/cover/2e018122cb56986277102d2041a592c8/264x264-000000-80-0-0.jpg" },
+      { id: 203, title: "Lose Yourself", artist: "Eminem", cover: "https://e-cdns-images.dzcdn.net/images/cover/e2b36a9fda865cb2e9ed1476b6291a7d/264x264-000000-80-0-0.jpg" },
     ],
   },
   {
@@ -234,11 +235,11 @@ const MOCK_RECENTS = [
       { id: 10, name: "Julie A.", avatar: "bg-pink-300" },
     ],
     history: [
-      { id: 301, title: "Shape of You", artist: "Ed Sheeran", cover: "bg-teal-400" },
-      { id: 302, title: "Blinding Lights", artist: "The Weeknd", cover: "bg-red-600" },
-      { id: 303, title: "Dance Monkey", artist: "Tones and I", cover: "bg-gray-400" },
-      { id: 304, title: "Someone You Loved", artist: "Lewis Capaldi", cover: "bg-slate-500" },
-      { id: 305, title: "Bad Guy", artist: "Billie Eilish", cover: "bg-yellow-300" },
+      { id: 301, title: "Shape of You", artist: "Ed Sheeran", cover: "https://e-cdns-images.dzcdn.net/images/cover/175e533652d3d4b6807865c34139d10e/264x264-000000-80-0-0.jpg" },
+      { id: 302, title: "Blinding Lights", artist: "The Weeknd", cover: "https://e-cdns-images.dzcdn.net/images/cover/4d94c965e3b48236d5073145a2781427/264x264-000000-80-0-0.jpg" },
+      { id: 303, title: "Dance Monkey", artist: "Tones and I", cover: "https://e-cdns-images.dzcdn.net/images/cover/857a2745339682d278832a87474f762a/264x264-000000-80-0-0.jpg" },
+      { id: 304, title: "Someone You Loved", artist: "Lewis Capaldi", cover: "https://e-cdns-images.dzcdn.net/images/cover/885a67f13017630316cd17ee33634360/264x264-000000-80-0-0.jpg" },
+      { id: 305, title: "Bad Guy", artist: "Billie Eilish", cover: "https://e-cdns-images.dzcdn.net/images/cover/f322674e265b602812232e9e2469d46d/264x264-000000-80-0-0.jpg" },
     ],
   },
 ];
@@ -246,6 +247,11 @@ const MOCK_RECENTS = [
 const MOCK_INVITATIONS = [
   { id: 1, from: "Sophie L.", avatar: "bg-purple-200", roomName: "Soirée Pizza" },
   { id: 2, from: "Marc P.", avatar: "bg-orange-200", roomName: "Gaming Night" },
+];
+
+const MOCK_ROOM_INVITATIONS = [
+  { id: 101, from: "Lucas", roomName: "Afterwork", cover: "bg-indigo-500" },
+  { id: 102, from: "Chloé", roomName: "Dimanche Chill", cover: "bg-orange-400" },
 ];
 
 // --- Components ---
@@ -380,6 +386,7 @@ export default function QunoApp() {
   const [queue, setQueue] = useState(MOCK_QUEUE);
   const [friends, setFriends] = useState(MOCK_FRIENDS);
   const [invitations, setInvitations] = useState(MOCK_INVITATIONS);
+  const [roomInvitations, setRoomInvitations] = useState(MOCK_ROOM_INVITATIONS);
   const [friendsTab, setFriendsTab] = useState("list"); // 'list' or 'invitations'
   const [isHosting, setIsHosting] = useState(false);
   const [activeRoom, setActiveRoom] = useState(null); // { id, role, name }
@@ -817,11 +824,19 @@ export default function QunoApp() {
                   }`}
               >
                 <div className="flex items-center gap-4">
-                  <div
-                    className={`w-12 h-12 rounded-xl ${room.cover} flex items-center justify-center text-white shadow-lg`}
-                  >
-                    {room.icon}
-                  </div>
+                  {room.cover?.startsWith("http") ? (
+                    <img
+                      src={room.cover}
+                      alt={room.name}
+                      className="w-12 h-12 rounded-xl object-cover shadow-sm"
+                    />
+                  ) : (
+                    <div
+                      className={`w-12 h-12 rounded-xl ${room.cover} flex items-center justify-center text-white shadow-lg`}
+                    >
+                      {room.icon}
+                    </div>
+                  )}
                   <div>
                     <h4 className="font-bold text-slate-900">{room.name}</h4>
                     <p className="text-xs text-slate-500">
@@ -950,9 +965,24 @@ export default function QunoApp() {
           <h1 className="text-2xl font-bold text-slate-900">Amis</h1>
           <p className="text-slate-500">Gérez vos connexions</p>
         </div>
-        <button className="bg-slate-900 text-white p-2 rounded-full hover:bg-slate-800 transition-colors">
-          <Plus size={20} />
-        </button>
+        <div className="flex gap-2">
+          <div className="relative">
+            <button
+              className="bg-white text-slate-900 p-2 rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 transition-colors"
+              onClick={() => alert(`Vous avez ${roomInvitations.length} invitations de room !`)}
+            >
+              <Bell size={20} />
+              {roomInvitations.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">
+                  {roomInvitations.length}
+                </span>
+              )}
+            </button>
+          </div>
+          <button className="bg-slate-900 text-white p-2 rounded-full hover:bg-slate-800 transition-colors">
+            <Plus size={20} />
+          </button>
+        </div>
       </header>
 
       <div className="relative">
@@ -981,7 +1011,7 @@ export default function QunoApp() {
             : "text-slate-500 hover:text-slate-700"
             }`}
         >
-          Invitations
+          Demandes
           {invitations.length > 0 && (
             <span className="ml-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
               {invitations.length}
