@@ -59,6 +59,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { authService } from "./services/auth";
 import logo from "./assets/Logo_Basique.svg";
 import SearchModal from "./components/SearchModal";
+import SubscriptionModal from "./components/modals/SubscriptionModal";
 
 // --- Mock Data ---
 
@@ -351,6 +352,7 @@ export default function QunoApp() {
 
   const [showRoomDetailsModal, setShowRoomDetailsModal] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -835,7 +837,9 @@ export default function QunoApp() {
           {MODES.map((mode) => (
             <div
               key={mode.id}
-              onClick={() => !mode.locked && setCurrentMode(mode.id)}
+              onClick={() =>
+                mode.locked ? setShowSubscriptionModal(true) : setCurrentMode(mode.id)
+              }
               className={`p-4 rounded-2xl border transition-all flex items-center gap-4 relative overflow-hidden ${mode.locked
                 ? "border-gray-100 bg-gray-50 opacity-75 cursor-not-allowed"
                 : currentMode === mode.id
@@ -1750,6 +1754,11 @@ export default function QunoApp() {
               isOpen={showSearchModal}
               onClose={() => setShowSearchModal(false)}
               onAddTrack={addToQueue}
+            />
+
+            <SubscriptionModal
+              isOpen={showSubscriptionModal}
+              onClose={() => setShowSubscriptionModal(false)}
             />
 
             {showIntegrationsModal && (
