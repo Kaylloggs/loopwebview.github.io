@@ -1571,7 +1571,7 @@ export default function QunoApp() {
           <Users className="text-blue-500" size={20} />
           Extension Capacité
         </h2>
-        <Card className="p-4 bg-blue-50 border-blue-100">
+        <Card className="p-4 !bg-blue-50 !border-blue-100">
           <div className="flex gap-4">
             <div className="p-3 bg-white text-blue-500 rounded-2xl shadow-sm h-fit">
               <Crown size={24} />
